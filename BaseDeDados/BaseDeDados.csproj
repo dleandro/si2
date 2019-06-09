@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractSession.cs" />
+    <Compile Include="Session.cs" />
     <Compile Include="IMapper.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

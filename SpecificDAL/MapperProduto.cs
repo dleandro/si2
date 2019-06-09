@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using BaseDeDados;
+using Entities;
+using InterfacesImapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,24 +11,37 @@ using System.Threading.Tasks;
 
 namespace EntidadeProduto
 {
-    public class MapperProduto
+    public class MapperProduto : IMapperProduto
     {
-        private ISessionProduto MySession;
+        private ISession MySession;
         private bool isMyConnection;
         private bool isMyTransaction;
 
 
 
 
-        public MapperProduto(ISessionProduto s)
+        public MapperProduto(ISession s)
         {
 
             MySession = s;
 
         }
 
+        public SqlCommand CreateCommand()
+        {
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
+            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
+
+            cmd.Transaction = MySession.GetCurrTr();
+
+            return cmd;
+        }
+
         public SqlCommand CreateCommand(String procedure)
         {
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
             SqlConnection con = MySession.GetCurrConn();
 
             SqlCommand cmd = new SqlCommand(procedure);
@@ -60,7 +75,10 @@ namespace EntidadeProduto
 
             param = cmd.Parameters.Add(new SqlParameter("@tipo", SqlDbType.NVarChar, 15));
             param.Value = a.Tipo;
+            cmd.ExecuteNonQuery();
 
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
         public void Update(Produto a)
@@ -86,7 +104,10 @@ namespace EntidadeProduto
 
             param = cmd.Parameters.Add(new SqlParameter("@tipo", SqlDbType.NVarChar, 15));
             param.Value = a.Tipo;
+            cmd.ExecuteNonQuery();
 
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
         public void Delete(Produto a)
@@ -97,7 +118,7 @@ namespace EntidadeProduto
             cmd.CommandType = CommandType.StoredProcedure;
             param = cmd.Parameters.Add(new SqlParameter("@codigo", SqlDbType.Char, 13));
             param.Value = a.codigo;
-
+            cmd.ExecuteNonQuery();
         }
 
         public void DeleteEverythingAboutProduct(Produto a)
@@ -108,7 +129,15 @@ namespace EntidadeProduto
             cmd.CommandType = CommandType.StoredProcedure;
             param = cmd.Parameters.Add(new SqlParameter("@codigo", SqlDbType.Char, 13));
             param.Value = a.codigo;
+            cmd.ExecuteNonQuery();
+
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
+        public Produto Read(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

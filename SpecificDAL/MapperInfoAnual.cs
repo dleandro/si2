@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using BaseDeDados;
+using Entities;
+using InterfacesImapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,21 +11,33 @@ using System.Threading.Tasks;
 
 namespace EntidadeInfoAnual
 {
-    public class MapperInfoAnual
+    public class MapperInfoAnual : IMapperInfoAnual
     {
-        private ISessionInfoAnual MySession;
+        private ISession MySession;
         private bool isMyConnection;
         private bool isMyTransaction;
 
-        public MapperInfoAnual(ISessionInfoAnual s)
+        public MapperInfoAnual(ISession s)
         {
 
             MySession = s;
 
         }
 
+        public SqlCommand CreateCommand()
+        {
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
+            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
+
+            cmd.Transaction = MySession.GetCurrTr();
+
+            return cmd;
+        }
         public SqlCommand CreateCommand(string procedure)
         {
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
             SqlConnection con = MySession.GetCurrConn();
 
             SqlCommand cmd = new SqlCommand(procedure);
@@ -44,6 +58,29 @@ namespace EntidadeInfoAnual
             param = cmd.Parameters.Add(new SqlParameter("@year", SqlDbType.SmallInt));
             param.Value = a.ano;
 
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
+
+        }
+
+        public void Create(InfoAnual entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public InfoAnual Read(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(InfoAnual entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(InfoAnual entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

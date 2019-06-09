@@ -54,32 +54,15 @@
     <Compile Include="MapperInfoAnual.cs" />
     <Compile Include="MapperProduto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Session.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseDeDados\BaseDeDados.csproj">
       <Project>{A65B5B7D-049E-4ED7-8642-9F633B368080}</Project>
       <Name>BaseDeDados</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DALSpecific\EntidadeFranqueadoVendeProduto.csproj">
-      <Project>{3de45d72-58cd-4c10-80e2-4e275b968af9}</Project>
-      <Name>EntidadeFranqueadoVendeProduto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EntidadeFornecedor\EntidadeFornecedor.csproj">
-      <Project>{8c3f3027-e91b-4cfa-be6b-0a4c5998bc9e}</Project>
-      <Name>EntidadeFornecedor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EntidadeFranquado\EntidadeFranqueado.csproj">
-      <Project>{052700ce-29ca-4630-a14a-2181e1284730}</Project>
-      <Name>EntidadeFranqueado</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EntidadeInfoAnual\EntidadeInfoAnual.csproj">
-      <Project>{6ffe8670-3d05-4a26-9a71-75e7b3f4bf00}</Project>
-      <Name>EntidadeInfoAnual</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EntidadeProduto\EntidadeProduto.csproj">
-      <Project>{622d927e-ff8b-4f46-9635-3f903a73193b}</Project>
-      <Name>EntidadeProduto</Name>
+    <ProjectReference Include="..\ClassLibrary1\InterfacesImapper.csproj">
+      <Project>{9caf451b-a119-4442-bd81-09dedfa95e6e}</Project>
+      <Name>InterfacesImapper</Name>
     </ProjectReference>
     <ProjectReference Include="..\Entidades\Entidades.csproj">
       <Project>{0d592d8c-31c4-46bb-be30-5c81589d697c}</Project>

@@ -5,29 +5,42 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BaseDeDados;
 using EntidadeFranqueado;
+using Entidades;
 using Entities;
+using InterfacesImapper;
 
 namespace EntidadeFranqueado
 {
-    public class MapperFranqueado
+    public class MapperFranqueado: IMapperFranqueado
     {
-        private ISessionFranqueado MySession;
+        private ISession MySession;
         private bool isMyConnection;
         private bool isMyTransaction;
 
-
-
-
-        public MapperFranqueado(ISessionFranqueado s)
+        public MapperFranqueado(ISession s)
         {
 
             MySession = s;
 
         }
 
+        public SqlCommand CreateCommand()
+        {
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
+            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
+
+            cmd.Transaction = MySession.GetCurrTr();
+
+            return cmd;
+        }
+
         public SqlCommand CreateCommand(string procedure)
         {
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
             SqlConnection con = MySession.GetCurrConn();
 
             SqlCommand cmd = new SqlCommand(procedure);
@@ -36,16 +49,7 @@ namespace EntidadeFranqueado
             return cmd;
         }
 
-        public SqlCommand CreateCommand()
-        {
-            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
-
-            cmd.Transaction = MySession.GetCurrTr();
-
-            return cmd;
-        }
-
-
+        
         public void Create(Franqueado a)
         {
             SqlCommand cmd = this.CreateCommand("franq_in");
@@ -65,6 +69,9 @@ namespace EntidadeFranqueado
             param = cmd.Parameters.Add(new SqlParameter("@morada", SqlDbType.VarChar, 100));
             param.Value = a.morada;
 
+            cmd.ExecuteNonQuery();
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
         public void Update(Franqueado a)
@@ -84,6 +91,10 @@ namespace EntidadeFranqueado
 
             param = cmd.Parameters.Add(new SqlParameter("@morada", SqlDbType.VarChar, 100));
             param.Value = a.morada;
+            cmd.ExecuteNonQuery();
+
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
         public void Delete(Franqueado a)
         {
@@ -93,13 +104,14 @@ namespace EntidadeFranqueado
             cmd.CommandType = CommandType.StoredProcedure;
             param = cmd.Parameters.Add(new SqlParameter("@id", SqlDbType.Decimal, 4));
             param.Value = a.id;
+            cmd.ExecuteNonQuery();
+
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
         public void DeleteEverythingAboutFranqueado(Franqueado a)
-        {
-
-            isMyConnection = MySession.OpenConnection();
-
+        { 
             SqlCommand cmd = CreateCommand();
             cmd.CommandText = "DELETE FROM Franqueado_Vende_Produto Where id_franqueado" + a.id;
             cmd.ExecuteNonQuery();
@@ -107,9 +119,14 @@ namespace EntidadeFranqueado
             cmd.CommandText = "DELETE FROM Franqueado Where id_franqueado" + a.id;
             cmd.ExecuteNonQuery();
 
+            MySession.EndTransaction(true, isMyTransaction);
             MySession.CloseConnection(isMyConnection);
 
         }
 
+        public Franqueado Read(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
