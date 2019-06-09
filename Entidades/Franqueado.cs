@@ -9,15 +9,15 @@
 
 namespace Entidades
 {
+    using Entities;
     using System;
     using System.Collections.Generic;
     
     public partial class Franqueado
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Franqueado()
         {
-            this.Franqueado_Vende_Produto = new HashSet<Franqueado_Vende_Produto>();
+            this.Franqueado_Vende_Produto = new HashSet<FranqueadoVendeProduto>();
         }
     
         public decimal id { get; set; }
@@ -26,6 +26,6 @@ namespace Entidades
         public string morada { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Franqueado_Vende_Produto> Franqueado_Vende_Produto { get; set; }
+        public virtual ICollection<FranqueadoVendeProduto> Franqueado_Vende_Produto { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using BaseDeDados;
+using Entities;
+using InterfacesImapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,36 +11,40 @@ using System.Threading.Tasks;
 
 namespace EntidadeFranqueadoVendeProduto
 {
-    public class MapperFranqueadoVendeProduto
+    public class MapperFranqueadoVendeProduto:IMapperFranqueadoVendeProduto
     {
-        private ISessionFranqueadoVendeProduto MySession;
+        private ISession MySession;
         private bool isMyConnection;
         private bool isMyTransaction;
 
 
 
 
-        public MapperFranqueadoVendeProduto(ISessionFranqueadoVendeProduto s)
+        public MapperFranqueadoVendeProduto(ISession s)
         {
 
             MySession = s;
 
         }
 
-        public SqlCommand CreateCommand(string procedure)
+        public SqlCommand CreateCommand()
         {
-            SqlConnection con = MySession.GetCurrConn();
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
+            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
 
-            SqlCommand cmd = new SqlCommand(procedure);
             cmd.Transaction = MySession.GetCurrTr();
 
             return cmd;
         }
 
-        public SqlCommand CreateCommand()
+        public SqlCommand CreateCommand(string procedure)
         {
-            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
+            isMyConnection = MySession.OpenConnection();
+            isMyTransaction = MySession.BeginTran();
+            SqlConnection con = MySession.GetCurrConn();
 
+            SqlCommand cmd = new SqlCommand(procedure);
             cmd.Transaction = MySession.GetCurrTr();
 
             return cmd;
@@ -74,6 +80,10 @@ namespace EntidadeFranqueadoVendeProduto
 
             param = cmd.Parameters.Add(new SqlParameter("@data_ultima_venda", SqlDbType.Date));
             param.Value = a.DataUltimaVenda;
+
+            cmd.ExecuteNonQuery();
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
         public void FranquadoFornecimento(FranqueadoVendeProduto f, int quantidade)
@@ -90,6 +100,10 @@ namespace EntidadeFranqueadoVendeProduto
 
             param = cmd.Parameters.Add(new SqlParameter("@quantidade", SqlDbType.Decimal, 4));
             param.Value = quantidade;
+
+            cmd.ExecuteNonQuery();
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
         public void ProductPurchase(FranqueadoVendeProduto f, int quantidade, double IdCustomer)
@@ -107,12 +121,14 @@ namespace EntidadeFranqueadoVendeProduto
 
             param = cmd.Parameters.Add(new SqlParameter("@quantity", SqlDbType.Int));
             param.Value = quantidade;
+
+            cmd.ExecuteNonQuery();
+            MySession.EndTransaction(true, isMyTransaction);
+            MySession.CloseConnection(isMyConnection);
         }
 
         public double TotalDeVendas(FranqueadoVendeProduto f)
         {
-            isMyConnection = MySession.OpenConnection();
-
             SqlCommand cmd = CreateCommand();
             cmd.CommandText = "SELECT @venda_ano_atual = venda_ano_atual from Franqueado_Vende_Produto WHERE id_franqueado =" + f.IdFranqueado;
             SqlParameter p1 = cmd.Parameters.Add("@venda_ano_atual", SqlDbType.Int);
@@ -121,10 +137,26 @@ namespace EntidadeFranqueadoVendeProduto
             if (p1.Value is System.DBNull)
                 throw new Exception("Não existem vendas no ano atual para este franqueado " + f.IdFranqueado);
 
+            cmd.ExecuteNonQuery();
+            MySession.EndTransaction(true, isMyTransaction);
             MySession.CloseConnection(isMyConnection);
 
             return Convert.ToDouble(p1.Value);
         }
 
+        public FranqueadoVendeProduto Read(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(FranqueadoVendeProduto entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(FranqueadoVendeProduto entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

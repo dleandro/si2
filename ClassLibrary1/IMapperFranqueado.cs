@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseDeDados;
+using Entidades;
 using Entities;
 
 namespace InterfacesImapper

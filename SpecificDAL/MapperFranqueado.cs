@@ -128,5 +128,6 @@ namespace EntidadeFranqueado
         {
             throw new NotImplementedException();
         }
+
     }
 }
