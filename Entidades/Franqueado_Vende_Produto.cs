@@ -12,23 +12,26 @@ namespace Entidades
     using System;
     using System.Collections.Generic;
     
-    public partial class Produto
+    public partial class Franqueado_Vende_Produto
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Produto()
+        public Franqueado_Vende_Produto()
         {
-            this.Franqueado_Vende_Produto = new HashSet<Franqueado_Vende_Produto>();
+            this.Info_Anual = new HashSet<Info_Anual>();
         }
     
-        public string codigo { get; set; }
-        public int id { get; set; }
-        public string descricao { get; set; }
+        public string codigo_prd { get; set; }
+        public decimal id_franqueado { get; set; }
         public int min_stock { get; set; }
         public int max_stock { get; set; }
         public int stock_atual { get; set; }
-        public string tipo { get; set; }
+        public decimal preco { get; set; }
+        public Nullable<int> venda_ano_atual { get; set; }
+        public Nullable<System.DateTime> data_ultima_venda { get; set; }
     
+        public virtual Franqueado Franqueado { get; set; }
+        public virtual Produto Produto { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Franqueado_Vende_Produto> Franqueado_Vende_Produto { get; set; }
+        public virtual ICollection<Info_Anual> Info_Anual { get; set; }
     }
 }

@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="si2Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'si2.dbo.costumers_bill' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="costumers_bill">
+          <Property Name="Id" Type="numeric" Precision="4" Scale="0" />
+          <Property Name="product_code" Type="char" MaxLength="13" />
+          <Property Name="price" Type="decimal" Precision="4" Scale="2" />
+          <Property Name="quantity" Type="int" />
+        </EntityType>-->
+        <EntityType Name="Fornecedor">
+          <Key>
+            <PropertyRef Name="nif" />
+          </Key>
+          <Property Name="nif" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="nome" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Franqueado">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="numeric" Precision="4" Scale="0" Nullable="false" />
+          <Property Name="nif" Type="numeric" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="nome" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="morada" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Franqueado_Vende_Produto">
+          <Key>
+            <PropertyRef Name="codigo_prd" />
+            <PropertyRef Name="id_franqueado" />
+          </Key>
+          <Property Name="codigo_prd" Type="char" MaxLength="13" Nullable="false" />
+          <Property Name="id_franqueado" Type="numeric" Precision="4" Scale="0" Nullable="false" />
+          <Property Name="min_stock" Type="int" Nullable="false" />
+          <Property Name="max_stock" Type="int" Nullable="false" />
+          <Property Name="stock_atual" Type="int" Nullable="false" />
+          <Property Name="preco" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="venda_ano_atual" Type="int" />
+          <Property Name="data_ultima_venda" Type="date" />
+        </EntityType>
+        <EntityType Name="Info_Anual">
+          <Key>
+            <PropertyRef Name="codigo_prd" />
+            <PropertyRef Name="id_franqueado" />
+            <PropertyRef Name="ano" />
+          </Key>
+          <Property Name="codigo_prd" Type="char" MaxLength="13" Nullable="false" />
+          <Property Name="id_franqueado" Type="numeric" Precision="4" Scale="0" Nullable="false" />
+          <Property Name="ano" Type="smallint" Nullable="false" />
+          <Property Name="quantidade" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Produto">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="char" MaxLength="13" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="descricao" Type="nvarchar" MaxLength="100" />
+          <Property Name="min_stock" Type="int" Nullable="false" />
+          <Property Name="max_stock" Type="int" Nullable="false" />
+          <Property Name="stock_atual" Type="int" Nullable="false" />
+          <Property Name="tipo" Type="nvarchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'si2.dbo.TudoSobreProduto' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TudoSobreProduto">
+          <Key>
+            <PropertyRef Name="codigo_prd" />
+            <PropertyRef Name="preco" />
+          </Key>
+          <Property Name="codigo_prd" Type="char" MaxLength="13" Nullable="false" />
+          <Property Name="min_stock" Type="int" />
+          <Property Name="max_stock" Type="int" />
+          <Property Name="stock_atual" Type="int" />
+          <Property Name="preco" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="venda_ano_atual" Type="int" />
+          <Property Name="data_ultima_venda" Type="date" />
+        </EntityType>
+        <Association Name="FK__Franquead__codig__1AD3FDA4">
+          <End Role="Produto" Type="Self.Produto" Multiplicity="1" />
+          <End Role="Franqueado_Vende_Produto" Type="Self.Franqueado_Vende_Produto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Produto">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Franqueado_Vende_Produto">
+              <PropertyRef Name="codigo_prd" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Franquead__id_fr__1BC821DD">
+          <End Role="Franqueado" Type="Self.Franqueado" Multiplicity="1" />
+          <End Role="Franqueado_Vende_Produto" Type="Self.Franqueado_Vende_Produto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Franqueado">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Franqueado_Vende_Produto">
+              <PropertyRef Name="id_franqueado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Info_Anual__1F98B2C1">
+          <End Role="Franqueado_Vende_Produto" Type="Self.Franqueado_Vende_Produto" Multiplicity="1" />
+          <End Role="Info_Anual" Type="Self.Info_Anual" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Franqueado_Vende_Produto">
+              <PropertyRef Name="codigo_prd" />
+              <PropertyRef Name="id_franqueado" />
+            </Principal>
+            <Dependent Role="Info_Anual">
+              <PropertyRef Name="codigo_prd" />
+              <PropertyRef Name="id_franqueado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="franq_del" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="numeric" Mode="In" />
+        </Function>
+        <Function Name="franq_in" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="numeric" Mode="In" />
+          <Parameter Name="nif" Type="numeric" Mode="In" />
+          <Parameter Name="nome" Type="varchar" Mode="In" />
+          <Parameter Name="morada" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="franq_up" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="numeric" Mode="In" />
+          <Parameter Name="nif" Type="numeric" Mode="In" />
+          <Parameter Name="nome" Type="varchar" Mode="In" />
+          <Parameter Name="morada" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="franq_vende_new_product" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="codigo" Type="char" Mode="In" />
+          <Parameter Name="id" Type="numeric" Mode="In" />
+          <Parameter Name="min_stock" Type="int" Mode="In" />
+          <Parameter Name="max_stock" Type="int" Mode="In" />
+          <Parameter Name="stock_atual" Type="int" Mode="In" />
+          <Parameter Name="preco" Type="decimal" Mode="In" />
+          <Parameter Name="venda_ano_atual" Type="int" Mode="In" />
+          <Parameter Name="data_ultima_venda" Type="date" Mode="In" />
+        </Function>
+        <Function Name="printTotalPrice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_costumer" Type="numeric" Mode="In" />
+        </Function>
+        <Function Name="prod_del_product_and_franqueado" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="codigo" Type="char" Mode="In" />
+          <Parameter Name="id_franqueado" Type="numeric" Mode="In" />
+        </Function>
+        <Function Name="prod_in" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="codigo" Type="char" Mode="In" />
+          <Parameter Name="descricao" Type="nvarchar" Mode="In" />
+          <Parameter Name="min_stock" Type="int" Mode="In" />
+          <Parameter Name="max_stock" Type="int" Mode="In" />
+          <Parameter Name="stock_atual" Type="int" Mode="In" />
+          <Parameter Name="tipo" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="product_purchase" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="codigo" Type="char" Mode="In" />
+          <Parameter Name="id_costumer" Type="numeric" Mode="In" />
+          <Parameter Name="quantity" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="si2ModelStoreContainer">
+          <EntitySet Name="Fornecedor" EntityType="Self.Fornecedor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Franqueado" EntityType="Self.Franqueado" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Franqueado_Vende_Produto" EntityType="Self.Franqueado_Vende_Produto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Info_Anual" EntityType="Self.Info_Anual" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Produto" EntityType="Self.Produto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TudoSobreProduto" EntityType="Self.TudoSobreProduto" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [TudoSobreProduto].[codigo_prd] AS [codigo_prd], 
+    [TudoSobreProduto].[min_stock] AS [min_stock], 
+    [TudoSobreProduto].[max_stock] AS [max_stock], 
+    [TudoSobreProduto].[stock_atual] AS [stock_atual], 
+    [TudoSobreProduto].[preco] AS [preco], 
+    [TudoSobreProduto].[venda_ano_atual] AS [venda_ano_atual], 
+    [TudoSobreProduto].[data_ultima_venda] AS [data_ultima_venda]
+    FROM [dbo].[TudoSobreProduto] AS [TudoSobreProduto]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__Franquead__codig__1AD3FDA4" Association="Self.FK__Franquead__codig__1AD3FDA4">
+            <End Role="Produto" EntitySet="Produto" />
+            <End Role="Franqueado_Vende_Produto" EntitySet="Franqueado_Vende_Produto" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Franquead__id_fr__1BC821DD" Association="Self.FK__Franquead__id_fr__1BC821DD">
+            <End Role="Franqueado" EntitySet="Franqueado" />
+            <End Role="Franqueado_Vende_Produto" EntitySet="Franqueado_Vende_Produto" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Info_Anual__1F98B2C1" Association="Self.FK__Info_Anual__1F98B2C1">
+            <End Role="Franqueado_Vende_Produto" EntitySet="Franqueado_Vende_Produto" />
+            <End Role="Info_Anual" EntitySet="Info_Anual" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="si2Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Fornecedor">
+          <Key>
+            <PropertyRef Name="nif" />
+          </Key>
+          <Property Name="nif" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="nome" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Franqueado">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Decimal" Precision="4" Scale="0" Nullable="false" />
+          <Property Name="nif" Type="Decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="nome" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="morada" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Franqueado_Vende_Produto" Relationship="Self.FK__Franquead__id_fr__1BC821DD" FromRole="Franqueado" ToRole="Franqueado_Vende_Produto" />
+        </EntityType>
+        <EntityType Name="Franqueado_Vende_Produto">
+          <Key>
+            <PropertyRef Name="codigo_prd" />
+            <PropertyRef Name="id_franqueado" />
+          </Key>
+          <Property Name="codigo_prd" Type="String" MaxLength="13" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="id_franqueado" Type="Decimal" Precision="4" Scale="0" Nullable="false" />
+          <Property Name="min_stock" Type="Int32" Nullable="false" />
+          <Property Name="max_stock" Type="Int32" Nullable="false" />
+          <Property Name="stock_atual" Type="Int32" Nullable="false" />
+          <Property Name="preco" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="venda_ano_atual" Type="Int32" />
+          <Property Name="data_ultima_venda" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Franqueado" Relationship="Self.FK__Franquead__id_fr__1BC821DD" FromRole="Franqueado_Vende_Produto" ToRole="Franqueado" />
+          <NavigationProperty Name="Produto" Relationship="Self.FK__Franquead__codig__1AD3FDA4" FromRole="Franqueado_Vende_Produto" ToRole="Produto" />
+          <NavigationProperty Name="Info_Anual" Relationship="Self.FK__Info_Anual__1F98B2C1" FromRole="Franqueado_Vende_Produto" ToRole="Info_Anual" />
+        </EntityType>
+        <EntityType Name="Info_Anual">
+          <Key>
+            <PropertyRef Name="codigo_prd" />
+            <PropertyRef Name="id_franqueado" />
+            <PropertyRef Name="ano" />
+          </Key>
+          <Property Name="codigo_prd" Type="String" MaxLength="13" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="id_franqueado" Type="Decimal" Precision="4" Scale="0" Nullable="false" />
+          <Property Name="ano" Type="Int16" Nullable="false" />
+          <Property Name="quantidade" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Franqueado_Vende_Produto" Relationship="Self.FK__Info_Anual__1F98B2C1" FromRole="Info_Anual" ToRole="Franqueado_Vende_Produto" />
+        </EntityType>
+        <EntityType Name="Produto">
+          <Key>
+            <PropertyRef Name="codigo" />
+          </Key>
+          <Property Name="codigo" Type="String" MaxLength="13" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="descricao" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="min_stock" Type="Int32" Nullable="false" />
+          <Property Name="max_stock" Type="Int32" Nullable="false" />
+          <Property Name="stock_atual" Type="Int32" Nullable="false" />
+          <Property Name="tipo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Franqueado_Vende_Produto" Relationship="Self.FK__Franquead__codig__1AD3FDA4" FromRole="Produto" ToRole="Franqueado_Vende_Produto" />
+        </EntityType>
+        <EntityType Name="TudoSobreProduto">
+          <Key>
+            <PropertyRef Name="codigo_prd" />
+            <PropertyRef Name="preco" />
+          </Key>
+          <Property Name="codigo_prd" Type="String" MaxLength="13" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="min_stock" Type="Int32" />
+          <Property Name="max_stock" Type="Int32" />
+          <Property Name="stock_atual" Type="Int32" />
+          <Property Name="preco" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="venda_ano_atual" Type="Int32" />
+          <Property Name="data_ultima_venda" Type="DateTime" Precision="0" />
+        </EntityType>
+        <Association Name="FK__Franquead__id_fr__1BC821DD">
+          <End Role="Franqueado" Type="Self.Franqueado" Multiplicity="1" />
+          <End Role="Franqueado_Vende_Produto" Type="Self.Franqueado_Vende_Produto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Franqueado">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Franqueado_Vende_Produto">
+              <PropertyRef Name="id_franqueado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Franquead__codig__1AD3FDA4">
+          <End Role="Produto" Type="Self.Produto" Multiplicity="1" />
+          <End Role="Franqueado_Vende_Produto" Type="Self.Franqueado_Vende_Produto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Produto">
+              <PropertyRef Name="codigo" />
+            </Principal>
+            <Dependent Role="Franqueado_Vende_Produto">
+              <PropertyRef Name="codigo_prd" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Info_Anual__1F98B2C1">
+          <End Role="Franqueado_Vende_Produto" Type="Self.Franqueado_Vende_Produto" Multiplicity="1" />
+          <End Role="Info_Anual" Type="Self.Info_Anual" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Franqueado_Vende_Produto">
+              <PropertyRef Name="codigo_prd" />
+              <PropertyRef Name="id_franqueado" />
+            </Principal>
+            <Dependent Role="Info_Anual">
+              <PropertyRef Name="codigo_prd" />
+              <PropertyRef Name="id_franqueado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="si2Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Fornecedors" EntityType="Self.Fornecedor" />
+          <EntitySet Name="Franqueadoes" EntityType="Self.Franqueado" />
+          <EntitySet Name="Franqueado_Vende_Produto" EntityType="Self.Franqueado_Vende_Produto" />
+          <EntitySet Name="Info_Anual" EntityType="Self.Info_Anual" />
+          <EntitySet Name="Produtoes" EntityType="Self.Produto" />
+          <EntitySet Name="TudoSobreProdutoes" EntityType="Self.TudoSobreProduto" />
+          <AssociationSet Name="FK__Franquead__id_fr__1BC821DD" Association="Self.FK__Franquead__id_fr__1BC821DD">
+            <End Role="Franqueado" EntitySet="Franqueadoes" />
+            <End Role="Franqueado_Vende_Produto" EntitySet="Franqueado_Vende_Produto" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Franquead__codig__1AD3FDA4" Association="Self.FK__Franquead__codig__1AD3FDA4">
+            <End Role="Produto" EntitySet="Produtoes" />
+            <End Role="Franqueado_Vende_Produto" EntitySet="Franqueado_Vende_Produto" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Info_Anual__1F98B2C1" Association="Self.FK__Info_Anual__1F98B2C1">
+            <End Role="Franqueado_Vende_Produto" EntitySet="Franqueado_Vende_Produto" />
+            <End Role="Info_Anual" EntitySet="Info_Anual" />
+          </AssociationSet>
+          <FunctionImport Name="franq_del">
+            <Parameter Name="id" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="franq_in">
+            <Parameter Name="id" Mode="In" Type="Decimal" />
+            <Parameter Name="nif" Mode="In" Type="Decimal" />
+            <Parameter Name="nome" Mode="In" Type="String" />
+            <Parameter Name="morada" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="franq_up">
+            <Parameter Name="id" Mode="In" Type="Decimal" />
+            <Parameter Name="nif" Mode="In" Type="Decimal" />
+            <Parameter Name="nome" Mode="In" Type="String" />
+            <Parameter Name="morada" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="franq_vende_new_product">
+            <Parameter Name="codigo" Mode="In" Type="String" />
+            <Parameter Name="id" Mode="In" Type="Decimal" />
+            <Parameter Name="min_stock" Mode="In" Type="Int32" />
+            <Parameter Name="max_stock" Mode="In" Type="Int32" />
+            <Parameter Name="stock_atual" Mode="In" Type="Int32" />
+            <Parameter Name="preco" Mode="In" Type="Decimal" />
+            <Parameter Name="venda_ano_atual" Mode="In" Type="Int32" />
+            <Parameter Name="data_ultima_venda" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="printTotalPrice">
+            <Parameter Name="id_costumer" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="prod_del_product_and_franqueado">
+            <Parameter Name="codigo" Mode="In" Type="String" />
+            <Parameter Name="id_franqueado" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="prod_in">
+            <Parameter Name="codigo" Mode="In" Type="String" />
+            <Parameter Name="descricao" Mode="In" Type="String" />
+            <Parameter Name="min_stock" Mode="In" Type="Int32" />
+            <Parameter Name="max_stock" Mode="In" Type="Int32" />
+            <Parameter Name="stock_atual" Mode="In" Type="Int32" />
+            <Parameter Name="tipo" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="product_purchase">
+            <Parameter Name="codigo" Mode="In" Type="String" />
+            <Parameter Name="id_costumer" Mode="In" Type="Decimal" />
+            <Parameter Name="quantity" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="si2ModelStoreContainer" CdmEntityContainer="si2Entities">
+          <EntitySetMapping Name="Fornecedors">
+            <EntityTypeMapping TypeName="si2Model.Fornecedor">
+              <MappingFragment StoreEntitySet="Fornecedor">
+                <ScalarProperty Name="nif" ColumnName="nif" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Franqueadoes">
+            <EntityTypeMapping TypeName="si2Model.Franqueado">
+              <MappingFragment StoreEntitySet="Franqueado">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nif" ColumnName="nif" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+                <ScalarProperty Name="morada" ColumnName="morada" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Franqueado_Vende_Produto">
+            <EntityTypeMapping TypeName="si2Model.Franqueado_Vende_Produto">
+              <MappingFragment StoreEntitySet="Franqueado_Vende_Produto">
+                <ScalarProperty Name="codigo_prd" ColumnName="codigo_prd" />
+                <ScalarProperty Name="id_franqueado" ColumnName="id_franqueado" />
+                <ScalarProperty Name="min_stock" ColumnName="min_stock" />
+                <ScalarProperty Name="max_stock" ColumnName="max_stock" />
+                <ScalarProperty Name="stock_atual" ColumnName="stock_atual" />
+                <ScalarProperty Name="preco" ColumnName="preco" />
+                <ScalarProperty Name="venda_ano_atual" ColumnName="venda_ano_atual" />
+                <ScalarProperty Name="data_ultima_venda" ColumnName="data_ultima_venda" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Info_Anual">
+            <EntityTypeMapping TypeName="si2Model.Info_Anual">
+              <MappingFragment StoreEntitySet="Info_Anual">
+                <ScalarProperty Name="codigo_prd" ColumnName="codigo_prd" />
+                <ScalarProperty Name="id_franqueado" ColumnName="id_franqueado" />
+                <ScalarProperty Name="ano" ColumnName="ano" />
+                <ScalarProperty Name="quantidade" ColumnName="quantidade" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Produtoes">
+            <EntityTypeMapping TypeName="si2Model.Produto">
+              <MappingFragment StoreEntitySet="Produto">
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="descricao" ColumnName="descricao" />
+                <ScalarProperty Name="min_stock" ColumnName="min_stock" />
+                <ScalarProperty Name="max_stock" ColumnName="max_stock" />
+                <ScalarProperty Name="stock_atual" ColumnName="stock_atual" />
+                <ScalarProperty Name="tipo" ColumnName="tipo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TudoSobreProdutoes">
+            <EntityTypeMapping TypeName="si2Model.TudoSobreProduto">
+              <MappingFragment StoreEntitySet="TudoSobreProduto">
+                <ScalarProperty Name="codigo_prd" ColumnName="codigo_prd" />
+                <ScalarProperty Name="min_stock" ColumnName="min_stock" />
+                <ScalarProperty Name="max_stock" ColumnName="max_stock" />
+                <ScalarProperty Name="stock_atual" ColumnName="stock_atual" />
+                <ScalarProperty Name="preco" ColumnName="preco" />
+                <ScalarProperty Name="venda_ano_atual" ColumnName="venda_ano_atual" />
+                <ScalarProperty Name="data_ultima_venda" ColumnName="data_ultima_venda" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="franq_del" FunctionName="si2Model.Store.franq_del" />
+          <FunctionImportMapping FunctionImportName="franq_in" FunctionName="si2Model.Store.franq_in" />
+          <FunctionImportMapping FunctionImportName="franq_up" FunctionName="si2Model.Store.franq_up" />
+          <FunctionImportMapping FunctionImportName="franq_vende_new_product" FunctionName="si2Model.Store.franq_vende_new_product" />
+          <FunctionImportMapping FunctionImportName="printTotalPrice" FunctionName="si2Model.Store.printTotalPrice" />
+          <FunctionImportMapping FunctionImportName="prod_del_product_and_franqueado" FunctionName="si2Model.Store.prod_del_product_and_franqueado" />
+          <FunctionImportMapping FunctionImportName="prod_in" FunctionName="si2Model.Store.prod_in" />
+          <FunctionImportMapping FunctionImportName="product_purchase" FunctionName="si2Model.Store.product_purchase" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

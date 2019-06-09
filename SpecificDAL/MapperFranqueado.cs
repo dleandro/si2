@@ -36,6 +36,15 @@ namespace EntidadeFranqueado
             return cmd;
         }
 
+        public SqlCommand CreateCommand()
+        {
+            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
+
+            cmd.Transaction = MySession.GetCurrTr();
+
+            return cmd;
+        }
+
 
         public void Create(Franqueado a)
         {
@@ -86,6 +95,21 @@ namespace EntidadeFranqueado
             param.Value = a.id;
         }
 
+        public void DeleteEverythingAboutFranqueado(Franqueado a)
+        {
+
+            isMyConnection = MySession.OpenConnection();
+
+            SqlCommand cmd = CreateCommand();
+            cmd.CommandText = "DELETE FROM Franqueado_Vende_Produto Where id_franqueado" + a.id;
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "DELETE FROM Franqueado Where id_franqueado" + a.id;
+            cmd.ExecuteNonQuery();
+
+            MySession.CloseConnection(isMyConnection);
+
+        }
 
     }
 }

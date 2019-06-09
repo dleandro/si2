@@ -12,9 +12,13 @@ namespace Entidades
     using System;
     using System.Collections.Generic;
     
-    public partial class Fornecedor
+    public partial class Info_Anual
     {
-        public string nif { get; set; }
-        public string nome { get; set; }
+        public string codigo_prd { get; set; }
+        public decimal id_franqueado { get; set; }
+        public short ano { get; set; }
+        public int quantidade { get; set; }
+    
+        public virtual Franqueado_Vende_Produto Franqueado_Vende_Produto { get; set; }
     }
 }

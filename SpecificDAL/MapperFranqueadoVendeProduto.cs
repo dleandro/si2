@@ -35,6 +35,14 @@ namespace EntidadeFranqueadoVendeProduto
             return cmd;
         }
 
+        public SqlCommand CreateCommand()
+        {
+            SqlCommand cmd = MySession.GetCurrConn().CreateCommand();
+
+            cmd.Transaction = MySession.GetCurrTr();
+
+            return cmd;
+        }
 
         public void Create(FranqueadoVendeProduto a)
         {
@@ -99,6 +107,23 @@ namespace EntidadeFranqueadoVendeProduto
 
             param = cmd.Parameters.Add(new SqlParameter("@quantity", SqlDbType.Int));
             param.Value = quantidade;
+        }
+
+        public double TotalDeVendas(FranqueadoVendeProduto f)
+        {
+            isMyConnection = MySession.OpenConnection();
+
+            SqlCommand cmd = CreateCommand();
+            cmd.CommandText = "SELECT @venda_ano_atual = venda_ano_atual from Franqueado_Vende_Produto WHERE id_franqueado =" + f.IdFranqueado;
+            SqlParameter p1 = cmd.Parameters.Add("@venda_ano_atual", SqlDbType.Int);
+            p1.Direction = ParameterDirection.Output;
+            cmd.ExecuteNonQuery();
+            if (p1.Value is System.DBNull)
+                throw new Exception("Não existem vendas no ano atual para este franqueado " + f.IdFranqueado);
+
+            MySession.CloseConnection(isMyConnection);
+
+            return Convert.ToDouble(p1.Value);
         }
 
     }
